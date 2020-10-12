@@ -10,6 +10,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import {Text} from 'react-native';
 
 import {
   AppRegistry,
@@ -25,37 +26,85 @@ var createReactClass = require('create-react-class');
 /*
  * TODO: Add your API key below!!
  */
-var API_KEY = "<YOUR_API_KEY_HERE>";
+var API_KEY = "plain-thunder-8568";
 
 var viroApiKey = "5ECFE036-0FFF-47A8-9895-0EB230B58245";
 
 var arScenes = {
   'ARSimpleSample': require('./js/HelloWorldSceneAR.js'),
-}
+  'CatchEm': require('./js/CatchEmSceneAR.js'),
+};
+
+var creatureNames = [
+    'Dragon',
+    'Monkey',
+    'Tiger',
+    'Fox',
+    'Elephant',
+    "Rabbit",
+    "Panda",
+];
 
 var ViroCodeSamplesSceneNavigator = createReactClass({
 
-  render: function() {
+  getInitialState() {
+    return {
+      hasCreatureInitialized : false
+    };
+  },
 
-    // Query echoAR
-    fetch('https://console.echoar.xyz/query?key=' + API_KEY)
-    .then((response) => response.json())
-    .then((json) => {
-      // Set database
-      global.echoDB = json;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  render: function() {
+//    fetch('https://console.echoar.xyz/query?key=' + API_KEY)
+//    .then((response) => response.json())
+//    .then((json) => {
+//      // Set database
+//      global.echoDB = json;
+//    })
+//    .catch((error) => {
+//      console.error(error);
+//    });
+
+    global.apiKey = API_KEY;
+    // Query echoAR for each creature
+    global.creatures = {"test" : "test"};
+    console.log("C: " + global.creatures);
+    for (const name of creatureNames) {
+//        console.log("thing: " + name);
+        fetch('https://console.echoar.xyz/query?key=' + API_KEY + "&data=name&value=" + name)
+        .then((response) => response.json())
+        .then((json) => {
+          // Set database
+//          console.log("thing2: " + name);
+          var entry;
+          for (let e of Object.values(json.db)) {
+            entry = e;
+          }
+          global.creatures[name] = entry;
+          if (name == "Fox") {
+            console.log("FOXES");
+            this.setState({ hasCreatureInitialized : true });
+          }
+
+//          console.log("thing3: " + Object.keys(entry));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+//        console.log("thing4: " + name);
+    }
 
     // Initiate AR scene
-    return (
-      <ViroARSceneNavigator
-        initialScene={{
-          scene: arScenes['ARSimpleSample'],
-        }}
-        apiKey={viroApiKey} />
-    );
+    if (this.state.hasCreatureInitialized) {
+      return (
+        <ViroARSceneNavigator
+          initialScene={{
+            scene: arScenes['CatchEm'],
+          }}
+          apiKey={viroApiKey} />
+      );
+    } else {
+      return <Text>Loading...</Text>;
+    }
   }
 });
 
