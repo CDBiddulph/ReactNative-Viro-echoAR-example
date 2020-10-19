@@ -32,7 +32,18 @@ var viroApiKey = "5ECFE036-0FFF-47A8-9895-0EB230B58245";
 
 var arScenes = {
   'ARSimpleSample': require('./js/HelloWorldSceneAR.js'),
-}
+  'CatchEm': require('./js/CatchEmSceneAR.js'),
+};
+
+var creatureNames = [
+    'Dragon',
+    'Monkey',
+    'Tiger',
+    'Fox',
+    'Elephant',
+    "Rabbit",
+    "Panda",
+];
 
 var ViroCodeSamplesSceneNavigator = createReactClass({
   getInitialState() {
@@ -41,29 +52,63 @@ var ViroCodeSamplesSceneNavigator = createReactClass({
     };
   },
 
-  render: function() {
+  getInitialState() {
+    return {
+      hasCreatureInitialized : false
+    };
+  },
 
-    // Query echoAR
-    fetch('https://console.echoar.xyz/query?key=' + API_KEY)
-    .then((response) => response.json())
-    .then((json) => {
-      // Set database
-      global.echoDB = json;
-      this.setState( {modelsAreLoaded : true });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  render: function() {
+//    fetch('https://console.echoar.xyz/query?key=' + API_KEY)
+//    .then((response) => response.json())
+//    .then((json) => {
+//      // Set database
+//      global.echoDB = json;
+//    })
+//    .catch((error) => {
+//      console.error(error);
+//    });
+
+    global.apiKey = API_KEY;
+    // Query echoAR for each creature
+    global.creatures = {"test" : "test"};
+    console.log("C: " + global.creatures);
+    for (const name of creatureNames) {
+//        console.log("thing: " + name);
+        fetch('https://console.echoar.xyz/query?key=' + API_KEY + "&data=name&value=" + name)
+        .then((response) => response.json())
+        .then((json) => {
+          // Set database
+//          console.log("thing2: " + name);
+          var entry;
+          for (let e of Object.values(json.db)) {
+            entry = e;
+          }
+          global.creatures[name] = entry;
+          if (name == "Fox") {
+            console.log("FOXES");
+            this.setState({ hasCreatureInitialized : true });
+          }
+//          console.log("thing3: " + Object.keys(entry));
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+//        console.log("thing4: " + name);
+    }
 
     // Initiate AR scene
-    if (!this.state.modelsAreLoaded) return (<Text> Hi </Text>);
-    return (
-      <ViroARSceneNavigator
-        initialScene={{
-          scene: arScenes['ARSimpleSample'],
-        }}
-        apiKey={viroApiKey} />
-    );
+    if (this.state.hasCreatureInitialized) {
+      return (
+        <ViroARSceneNavigator
+          initialScene={{
+            scene: arScenes['CatchEm'],
+          }}
+          apiKey={viroApiKey} />
+      );
+    } else {
+      return <Text>Loading...</Text>;
+    }
   }
 });
 
