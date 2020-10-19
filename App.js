@@ -10,6 +10,7 @@
 'use strict';
 
 import React, { Component } from 'react';
+import { Text } from 'react-native';
 
 import {
   AppRegistry,
@@ -25,7 +26,7 @@ var createReactClass = require('create-react-class');
 /*
  * TODO: Add your API key below!!
  */
-var API_KEY = "<YOUR_API_KEY_HERE>";
+var API_KEY = "plain-thunder-8568";
 
 var viroApiKey = "5ECFE036-0FFF-47A8-9895-0EB230B58245";
 
@@ -34,6 +35,11 @@ var arScenes = {
 }
 
 var ViroCodeSamplesSceneNavigator = createReactClass({
+  getInitialState() {
+    return {
+      modelsAreLoaded : false,
+    };
+  },
 
   render: function() {
 
@@ -43,12 +49,14 @@ var ViroCodeSamplesSceneNavigator = createReactClass({
     .then((json) => {
       // Set database
       global.echoDB = json;
+      this.setState( {modelsAreLoaded : true });
     })
     .catch((error) => {
       console.error(error);
     });
 
     // Initiate AR scene
+    if (!this.state.modelsAreLoaded) return (<Text> Hi </Text>);
     return (
       <ViroARSceneNavigator
         initialScene={{

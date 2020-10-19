@@ -37,6 +37,7 @@ var HelloWorldSceneAR = createReactClass({
     var entries = []
     for (let entry of this.state.db) {
       // Parse entry
+      console.log(entry["additionalData"]["name"]);
       var srcModel = "https://console.echoar.xyz/query?key=" + this.state.apiKey + "&file=";
       var typeModel = entry['hologram'].filename.toLowerCase().split('.').pop();
       switch (entry['hologram'].type) {
