@@ -26,7 +26,7 @@ var createReactClass = require('create-react-class');
 /*
  * TODO: Add your API key below!!
  */
-var API_KEY = "plain-thunder-8568";
+var API_KEY = "<YOUR-API-KEY-HERE>";
 
 var viroApiKey = "5ECFE036-0FFF-47A8-9895-0EB230B58245";
 
@@ -44,6 +44,8 @@ var creatureNames = [
     "Rabbit",
     "Panda",
 ];
+
+var creatures = []
 
 var ViroCodeSamplesSceneNavigator = createReactClass({
   getInitialState() {
@@ -86,8 +88,8 @@ var ViroCodeSamplesSceneNavigator = createReactClass({
           }
           global.creatures[name] = entry;
           if (name == "Fox") {
-            console.log("FOXES");
-            this.setState({ hasCreatureInitialized : true });
+            console.log("Loaded the fox");
+//            arScenes["CatchEm"].updateCreatures(creatures);
           }
 //          console.log("thing3: " + Object.keys(entry));
         })
@@ -98,17 +100,14 @@ var ViroCodeSamplesSceneNavigator = createReactClass({
     }
 
     // Initiate AR scene
-    if (this.state.hasCreatureInitialized) {
       return (
         <ViroARSceneNavigator
           initialScene={{
             scene: arScenes['CatchEm'],
+            params: creatures,
           }}
           apiKey={viroApiKey} />
       );
-    } else {
-      return <Text>Loading...</Text>;
-    }
   }
 });
 

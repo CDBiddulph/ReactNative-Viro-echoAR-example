@@ -28,7 +28,11 @@ var CatchEmSceneAR = createReactClass({
       hasARInitialized : false,
       text : "Initializing AR...",
       apiKey : "",
+      creatures : [],
     };
+  },
+  updateCreatures: function(c) {
+    this.setState({ creatures : c })
   },
   render: function() {
     console.log("HEY");
@@ -37,11 +41,9 @@ var CatchEmSceneAR = createReactClass({
     if (this.state.hasARInitialized) {
       console.log("AR initialized");
       var entry = global.creatures["Fox"];
-      console.log("AR initialized: " + entry);
       console.log("Creatures: " + Object.keys(global.creatures));
       if (entry != null) {
-        console.log("Fox is here");
-        console.log("ENTRIES: " + entry);
+        console.log("Fox is in the AR Scene" + entry);
         // Parse entry
         var srcModel = "https://console.echoar.xyz/query?key=" + this.state.apiKey + "&file=";
         var typeModel = entry['hologram'].filename.toLowerCase().split('.').pop();
